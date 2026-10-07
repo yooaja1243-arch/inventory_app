@@ -10,6 +10,10 @@ class Login extends StatefulWidget {
 class _LoginPage extends State<Login> {
   // Pembuatan Variabel Yang Akan Dipakai
   TextEditingController inputNama = TextEditingController();
+  TextEditingController inputPassword = TextEditingController();
+
+  // Tambahan formKey
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -20,45 +24,75 @@ class _LoginPage extends State<Login> {
       ),
       // Color.fromARGB( opacity, red, gren, blue)
       backgroundColor: Color.fromARGB(245, 19, 222, 124),
-      body: Column(
-        children: [
-          Center(
-            child: Container(
+      body: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            Center(
+              child: Image(
+                image: AssetImage('asset/image/ma.jpg'),
+                width: 200,
+                height: 200,
+              ),
+            ),
+            Container(
               width: 300,
-              // height: 300,
               color: Color.fromARGB(197, 220, 155, 155),
-              child: TextField(
-                // Dekorasi untuk Petunjuk Pengisian dan Garis
+              child: TextFormField(
                 decoration: InputDecoration(
                   hintText: 'Masukan Nama Kamu',
                   border: OutlineInputBorder(),
                 ),
-                // controller untuk
                 controller: inputNama,
-                // Ketika Dikirim nanti
-                onSubmitted: (values) {
-                  // isi blabla
+                obscureText: false,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Nama wajib diisi';
+                  }
+                  return null;
+                },
+                onFieldSubmitted: (values) {
                   inputNama.text = values;
                 },
               ),
             ),
-          ),
-          ElevatedButton(
-            child: Text("Login"),
-            onPressed: () {
-              print(inputNama.text);
-            },
-          ),
-        ],
+            Center(
+              child: Container(
+                width: 300,
+                color: Color.fromARGB(197, 220, 155, 155),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Masukan Password Anda",
+                    border: OutlineInputBorder(),
+                  ),
+                  controller: inputPassword,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Password wajib diisi';
+                    }
+                    return null;
+                  },
+                  onFieldSubmitted: (values) {
+                    inputPassword.text = values;
+                  },
+                ),
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(16)),
+            ElevatedButton(
+              child: Text("Login"),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  print(inputNama.text);
+                  print(inputPassword.text);
+                  Navigator.pushReplacementNamed(context, "/home");
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(
-    MaterialApp(
-      home: Login(),
-    ),
-  );
 }
